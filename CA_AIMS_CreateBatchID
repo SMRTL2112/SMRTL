@@ -1,0 +1,4 @@
+update AIms a set BATCH_ID ='CA', BATCH_REPORT_DATE=sysdate, BATCH_REPORTED_TO='CA'
+where upper(a.patient_state) in ('CA', 'CALIFORNIA')
+and batch_id is null;
+commit;
