@@ -1,0 +1,19 @@
+-- to find duplicate original_coc rows
+SELECT original_coc, COUNT(*) FROM sample_schedules group by original_coc having count(*) > 1;
+
+select * from sample_schedules where original_coc='S012176699';
+
+
+NOTE:  usinlg MIN below will retain the oldest duplicate row, using MAX below will retain the newest duplicate row
+
+
+
+-- to remove duplicate original_coc rows
+DELETE FROM sample_schedules
+  WHERE ROWID IN 
+  (SELECT ss2.ROWID FROM sample_schedules ss2
+  MINUS
+  SELECT MIN(ss3.ROWID) FROM sample_schedules ss3
+  GROUP BY ss3.ORIGINAL_COC);
+  
+ commit;
