@@ -1,0 +1,10 @@
+select patient_phone_number, length(patient_phone_number), CASE
+               WHEN p.patient_phone_number = '(999)999-9999'
+               THEN
+                   '9999999999'
+               WHEN substr(patient_phone_number,1,1) = '(' 
+               THEN
+                   substr(patient_phone_number,2,3) || substr(patient_phone_number,7,3) || substr(patient_phone_number,11,4)
+               ELSE
+                   p.patient_phone_number end fix
+from aims@horizon12 p where patient_state in ('OH','Ohio');
