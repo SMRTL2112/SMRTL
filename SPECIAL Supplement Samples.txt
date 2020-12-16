@@ -1,0 +1,17 @@
+select DISTINCT sa.hsn, Bs.Batch_Number, ba.create_date, Pi.Cust_Sample_Id, Sa.Reqnbr, Sa.Receive_Date, Sa.Report_Date, P.Profile_Desc/*, P.Cust_Id, Sa.Ship_To_Seq*/, nvl(Addr.First_Name,addr2.first_name) first_name, nvl(Addr.Last_Name,addr2.last_name) last_name, nvl(Addr_Det.Company_Name,addr_det2.company_name) company_name, Sa.Sample_Desc from samples sa
+join Permanent_Ids pi on Pi.Lab_Sample_Id = sa.hsn
+join profiles p on p.reqnbr = sa.reqnbr
+join schedules sc on sc.schedule_id = sa.hsn
+join batch_schedules bs on bs.schedule_seq = sc.schedule_seq
+join batches ba ON bs.queue = ba.queue AND bs.batch_number = ba.batch_number
+left join map_to_addrs mta ON p.cust_id = mta.cust_id AND substr(mta.flags,5,1) = 'R'
+left join addresses addr2 on mta.addr_seq = addr2.addr_seq
+left join address_details addr_det2 ON addr2.addr_detail_seq = addr_det2.addr_detail_seq
+left join Addresses addr on Addr.Addr_Seq = Sa.Ship_To_Seq
+left join Address_Details addr_det on Addr_Det.Addr_Detail_Seq = Addr.Addr_Detail_Seq
+where bs.queue = 'CONF'
+--and Sc.Proc_Code = 'WADA MISC'
+and ba.qc_rule = 'ANALYTICAL'
+and Sa.Receive_Date >= '08/28/2018'
+order by Bs.Batch_Number, sa.hsn
+;
